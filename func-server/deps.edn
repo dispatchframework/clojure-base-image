@@ -1,0 +1,1 @@
+{:deps {func-server {:mvn/version "0.1.0-SNAPSHOT"}}}
