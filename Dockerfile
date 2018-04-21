@@ -1,4 +1,4 @@
-FROM vmware/photon2:20180409 AS build
+FROM vmware/photon2:20180409
 
 
 ## Install JDK10
