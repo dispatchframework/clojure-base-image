@@ -36,7 +36,8 @@
   (is (= ["Some" "logs"]
          (-> ((capture-logs logging-wrapped-fn) {:payload "Hey!"})
              :context
-             :logs))))
+             :logs
+             :stderr))))
 
 
 (defn- logging-*-fn [context payload]
@@ -55,7 +56,7 @@
     (is (= 14
            (:payload msg)))
     (is (= ["Arg: 2" "Result: 14"]
-           (-> msg :context :logs)))))
+           (-> msg :context :logs :stdout)))))
 
 
 

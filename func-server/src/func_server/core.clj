@@ -2,22 +2,33 @@
   (:require [clojure.tools.logging :as log]
             [clojure.tools.logging.impl :as li]
             [clojure.string :as string]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s])
+  (:import (clojure.lang Atom
+                         Namespace)))
 
 
 (defn- logs? [logs]
-  (and (instance? clojure.lang.Atom logs)
-       (vector? @logs)))
+  (and (instance? Atom logs)
+       (map? @logs)
+       (vector? (:stdout @logs))
+       (vector? (:stderr @logs))))
+
 
 (defn- ns? [n]
-  (instance? clojure.lang.Namespace n))
+  (instance? Namespace n))
+
+(defn- stream-kw? [k]
+  (or (= :stdout k)
+      (= :stderr k)))
 
 
-(defn write-log! [logs message]
-  (swap! logs conj message))
+(defn write-log! [logs stream-kw message]
+  (swap! logs #(update % stream-kw conj message)))
+
 
 (s/fdef write-log!
   :args (s/cat :logs logs?
+               :stream-kw stream-kw?
                :message string?))
 
 
@@ -39,9 +50,9 @@
     (enabled? [_ _] true)
     (write! [_ level throwable message]
       (case level
-        ::stderr (write-log! logs message)
-        ::stdout (write-log! logs message)
-        (write-log! logs (format-msg ns level message throwable))))))
+        ::stderr (write-log! logs :stderr message)
+        ::stdout (write-log! logs :stdout message)
+        (write-log! logs :stderr (format-msg ns level message throwable))))))
 
 (def logger (memoize new-logger))
 
@@ -71,17 +82,20 @@
          :payload nil}))))
 
 
+(def ^:private function-ns (create-ns 'function))
+
 (defn capture-logs [f]
-  (let [function-ns (create-ns 'function)]
-    (fn [message]
-      (let [logs (atom [])]
-        (binding [log/*logger-factory* (logger-factory logs)]
-          (log/with-logs [function-ns ::stdout ::stderr]
-            (try
-              (log/log-capture! function-ns ::stdout ::stderr)
-              (update-in (f message) [:context :logs] (constantly @logs))
-              (finally
-                (log/log-uncapture!)))))))))
+  (fn [x]
+    (let [logs (atom {:stdout []
+                      :stderr []})]
+      (binding [log/*logger-factory* (logger-factory logs)]
+        (log/with-logs [function-ns ::stdout ::stderr]
+          (try
+            (log/log-capture! function-ns ::stdout ::stderr)
+            (-> (f x)
+                (update-in [:context :logs] (constantly @logs)))
+            (finally
+              (log/log-uncapture!))))))))
 
 
 (defn wrap-func [f]
