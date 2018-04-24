@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e -x
 
-docker build -t dispatchframework/clojure-base:0.0.1 .
+docker build -t dispatchframework/clojure-base:0.0.2 .
