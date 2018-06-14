@@ -1,4 +1,4 @@
-FROM vmware/photon2:20180409
+FROM vmware/photon2:20180424
 
 
 ## Install JDK10
@@ -36,10 +36,12 @@ COPY image-template ${IMAGE_TEMPLATE}/
 COPY function-template ${FUNCTION_TEMPLATE}/
 
 
-## Set FUNCTION_MODULE and PORT, expose $PORT
+## Set WORKDIR and PORT, expose $PORT, cd to $WORKDIR
 
-ENV FUNCTION_MODULE=/function/function.clj PORT=8080
+ENV WORKDIR=/function PORT=8080
+
 EXPOSE ${PORT}
+WORKDIR ${WORKDIR}
 
 # OpenFaaS readiness check depends on this file
 RUN touch /tmp/.lock

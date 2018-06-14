@@ -5,7 +5,8 @@
             :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.logging "0.4.0"]
-                 [http-kit "2.3.0-beta2"]
+                 [environ "1.1.0"]
+                 [http-kit "2.3.0"]
                  [compojure "1.6.0"]
                  [ring/ring-core "1.6.3"]
                  [ring/ring-json "0.5.0-beta1"]

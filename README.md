@@ -43,23 +43,39 @@ $ dispatch get image clj-mylibs
 
 ### Creating Functions
 
-Using the Clojure base-image, you can create Dispatch functions from Clojure source files. The file can declare any namespace and require any namespaces from the libraries in the image (see above).
+Using the Clojure base-image, you can create Dispatch functions from Clojure project directories (source files are in `src` sub-dir): 
 
-The only requirement is: there must be a public function named **`function`** that accepts 2 arguments (`context` and `payload`), for example:
 ```bash
-$ cat ./func_demo.clj
+$ cat ./src/func_demo.clj
 ```
 ```clojure
 (ns func-demo
   (:require [clj-yaml.core :as yaml]))
 
-(defn function [context payload]
+(defn parse-yaml [contextpayload]
+  (yaml/parse-string payload))
+```  
+```bash
+$ dispatch create function --image=clj-mylibs parse-yaml . --handler=func-demo/parse-yaml
+```
+
+You can also use a single source file to create a simple function. The only requirement is: the entry point (handler) function must be a public function named **`handle`** that accepts 2 arguments (`context` and `payload`), for example:  
+
+```bash
+$ cat ./src/func_demo.clj
+```
+```clojure
+(ns func-demo
+  (:require [clj-yaml.core :as yaml]))
+
+(defn handle [context payload]
   (yaml/parse-string payload))
 ```
 
 ```bash
-$ dispatch create function clj-mylibs parse-yaml ./func_demo.clj
+$ dispatch create function --image=clj-mylibs parse-yaml ./src/func_demo.clj
 ```
+
 
 Make sure the function status is `READY` (it normally goes from `INITIALIZED` to `READY`):
 ```bash
