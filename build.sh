@@ -1,4 +1,10 @@
 #!/bin/sh
 set -e -x
 
-docker build -t dispatchframework/clojure-base:0.0.2 .
+: ${DOCKER_REGISTRY:="dispatchframework"}
+
+IMAGE=${DOCKER_REGISTRY}/clojure-base:$(cat version.txt)
+docker build -t ${IMAGE} .
+if [ -n "$PUSH" ]; then
+    docker push ${IMAGE}
+fi

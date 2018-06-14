@@ -40,3 +40,6 @@ COPY function-template ${FUNCTION_TEMPLATE}/
 
 ENV FUNCTION_MODULE=/function/function.clj PORT=8080
 EXPOSE ${PORT}
+
+# OpenFaaS readiness check depends on this file
+RUN touch /tmp/.lock

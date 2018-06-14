@@ -1,7 +1,7 @@
 # clojure-base-image
 Clojure (on JVM) support for Dispatch
 
-Latest image [on Docker Hub](https://hub.docker.com/r/dispatchframework/clojure-base/tags/): `dispatchframework/clojure-base:0.0.2`
+Latest image [on Docker Hub](https://hub.docker.com/r/dispatchframework/clojure-base/tags/)
 
 ## Usage
 
@@ -11,7 +11,7 @@ You need a recent version of Dispatch [installed in your Kubernetes cluster, Dis
 
 To add the base-image to Dispatch:
 ```bash
-$ dispatch create base-image clj dispatchframework/clojure-base:0.0.2
+$ dispatch create base-image clj dispatchframework/clojure-base:<tag>
 ```
 
 Make sure the base-image status is `READY` (it normally goes from `INITIALIZED` to `READY`):
@@ -45,7 +45,7 @@ $ dispatch get image clj-mylibs
 
 Using the Clojure base-image, you can create Dispatch functions from Clojure source files. The file can declare any namespace and require any namespaces from the libraries in the image (see above).
 
-The only requirement is: there must be a public function named **`function`** that accepts 2 arguments (`context` and `payload`), for example:  
+The only requirement is: there must be a public function named **`function`** that accepts 2 arguments (`context` and `payload`), for example:
 ```bash
 $ cat ./func_demo.clj
 ```
