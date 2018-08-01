@@ -111,3 +111,12 @@ $ dispatch exec --json --input '"{name: VMware, place: Palo Alto}"' --wait parse
     "tags": []
 }
 ```
+
+## Running Tests
+
+To run tests for `func-server`:
+```bash
+$ pwd
+/clojure-base-image/func-server
+$ lein test
+```
